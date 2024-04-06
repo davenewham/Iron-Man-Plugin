@@ -7,31 +7,31 @@ import org.bukkit.event.HandlerList;
 import com.n3wham.IronMan.Main;
 
 public class EnableIronManEvent extends Event {
-	
-	public Main plugin;
+
+    public Main plugin;
     private static final HandlerList handlers = new HandlerList();
     private Player player;
     private boolean muted;
- 
+
     public EnableIronManEvent(Main plugin, Player player, boolean muted) {
-		this.player = player;
-		this.muted = muted;
+        this.player = player;
+        this.muted = muted;
     }
- 
+
     public Player getPlayer() {
         return player;
     }
- 
+
     public boolean isMuted() {
         return muted;
     }
- 
+
     public HandlerList getHandlers() {
         return handlers;
     }
- 
+
     public static HandlerList getHandlerList() {
         return handlers;
     }
-	
+
 }
