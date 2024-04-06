@@ -11,98 +11,91 @@ import com.n3wham.IronMan.CustomEvents.*;
 
 public class IronManCommand implements CommandExecutor {
 
-    public Main plugin;
-    public String prefix;
+  public Main plugin;
+  public String prefix;
 
-    public IronManCommand(Main plugin) {
+  public IronManCommand(Main plugin) {
+    this.plugin = plugin;
+    this.prefix = plugin.getPrefix();
+  }
 
-        this.plugin = plugin;
-        this.prefix = plugin.getPrefix();
-
+  @Override
+  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    if (!(sender instanceof Player)) {
+      sender.sendMessage(plugin.getPrefix() + "Iron Man is for players only.");
+      return true;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    final Player player = (Player) sender;
 
-        if (sender instanceof Player) {
+    if (plugin.hasPermission(player, "ironman.use")) {
+      player.sendMessage(prefix + "You don't have the power of Iron Man!");
+      return true;
+    }
 
-            final Player player = (Player) sender;
+    if (args.length == 0) {
 
-            if (plugin.hasPermission(player, "ironman.use")) {
+      if (!plugin.isIronMan(player)) {
 
-                if (args.length == 0) {
+        EnableIronManEvent enableIM = new EnableIronManEvent(plugin, player, false);
+        plugin.getServer().getPluginManager().callEvent(enableIM);
 
-                    if (!plugin.isIronMan(player)) {
+      } else {
 
-                        EnableIronManEvent enableIM = new EnableIronManEvent(plugin, player, false);
-                        plugin.getServer().getPluginManager().callEvent(enableIM);
+        DisableIronManEvent disableIM = new DisableIronManEvent(plugin, player, false);
+        plugin.getServer().getPluginManager().callEvent(disableIM);
 
-                    } else {
+      }
 
-                        DisableIronManEvent disableIM = new DisableIronManEvent(plugin, player, false);
-                        plugin.getServer().getPluginManager().callEvent(disableIM);
+    } else if (args.length == 1) {
 
-                    }
+      if (args[0].equalsIgnoreCase("toggle")) {
 
-                } else if (args.length == 1) {
+        String setting = plugin.getArmourSetting(player);
+        if (setting.equalsIgnoreCase("iron")) {
+          plugin.setArmourSetting(player, "leather");
+          player.sendMessage(prefix + "You have selected the Dyed Leather Armour Suit.");
 
-                    if (args[0].equalsIgnoreCase("toggle")) {
+          if (plugin.isIronMan(player)) {
+            DisableIronManEvent disableIM = new DisableIronManEvent(plugin, player, true);
+            plugin.getServer().getPluginManager().callEvent(disableIM);
 
-                        String setting = plugin.getArmourSetting(player);
-                        if (setting.equalsIgnoreCase("iron")) {
-                            plugin.setArmourSetting(player, "leather");
-                            player.sendMessage(prefix + "You have selected the Dyed Leather Armour Suit.");
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
-                            if (plugin.isIronMan(player)) {
-                                DisableIronManEvent disableIM = new DisableIronManEvent(plugin, player, true);
-                                plugin.getServer().getPluginManager().callEvent(disableIM);
+              public void run() {
+                EnableIronManEvent enableIM = new EnableIronManEvent(plugin, player, true);
+                plugin.getServer().getPluginManager().callEvent(enableIM);
+              }
 
-                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-                                    public void run() {
-                                        EnableIronManEvent enableIM = new EnableIronManEvent(plugin, player, true);
-                                        plugin.getServer().getPluginManager().callEvent(enableIM);
-                                    }
-
-                                }, 2);
-                            }
-                        } else {
-                            plugin.setArmourSetting(player, "iron");
-                            player.sendMessage(prefix + "You have selected the Iron Armour Suit.");
-
-                            if (plugin.isIronMan(player)) {
-                                DisableIronManEvent disableIM = new DisableIronManEvent(plugin, player, true);
-                                plugin.getServer().getPluginManager().callEvent(disableIM);
-
-                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-                                    public void run() {
-                                        EnableIronManEvent enableIM = new EnableIronManEvent(plugin, player, true);
-                                        plugin.getServer().getPluginManager().callEvent(enableIM);
-                                    }
-
-                                }, 2);
-                            }
-                        }
-
-                    } else {
-                        player.sendMessage(prefix + ChatColor.RED + "Incorrect argument supplied.");
-                    }
-
-                } else {
-                    player.sendMessage(prefix + ChatColor.RED + "Incorrect number arguments supplied.");
-                }
-
-            } else {
-                player.sendMessage(prefix + "You don't have the power of Iron Man!");
-            }
-
+            }, 2);
+          }
         } else {
-            sender.sendMessage(plugin.getPrefix() + "Iron Man is for players only.");
+          plugin.setArmourSetting(player, "iron");
+          player.sendMessage(prefix + "You have selected the Iron Armour Suit.");
 
+          if (plugin.isIronMan(player)) {
+            DisableIronManEvent disableIM = new DisableIronManEvent(plugin, player, true);
+            plugin.getServer().getPluginManager().callEvent(disableIM);
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+              public void run() {
+                EnableIronManEvent enableIM = new EnableIronManEvent(plugin, player, true);
+                plugin.getServer().getPluginManager().callEvent(enableIM);
+              }
+
+            }, 2);
+          }
         }
 
-        return true;
+      } else {
+        player.sendMessage(prefix + ChatColor.RED + "Incorrect argument supplied.");
+      }
+
+    } else {
+      player.sendMessage(prefix + ChatColor.RED + "Incorrect number arguments supplied.");
     }
+    return true;
+  }
 
 }
