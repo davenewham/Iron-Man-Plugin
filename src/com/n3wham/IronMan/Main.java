@@ -1,7 +1,5 @@
 package com.n3wham.IronMan;
 
-import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -18,8 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.n3wham.IronMan.Events.*;
 
 public class Main extends JavaPlugin {
-
-	public static Permission perms = null;
 
 	@Override
 	public void onEnable() {
@@ -51,9 +47,7 @@ public class Main extends JavaPlugin {
 	}
 
 	public boolean setupPermissions() {
-		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		perms = rsp.getProvider();
-		return perms != null;
+		return false;
 	}
 
 	public String getPrefix() {
@@ -61,15 +55,11 @@ public class Main extends JavaPlugin {
 	}
 
 	public boolean hasPermission(Player player, String perm) {
-		if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
-			return perms.has(player, perm);
-		} else {
-			if (player.isOp()) {
-				return true;
-			}
-			
-			return player.hasPermission(perm);
+		if (player.isOp()) {
+			return true;
 		}
+		
+		return player.hasPermission(perm);
 	}
 
 	public boolean isIronMan(Player player) {
