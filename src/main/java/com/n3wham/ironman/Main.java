@@ -1,4 +1,4 @@
-package com.n3wham.IronMan;
+package com.n3wham.ironman;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.n3wham.IronMan.Events.*;
+import com.n3wham.ironman.Events.*;
 
 public class Main extends JavaPlugin {
 

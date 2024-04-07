@@ -1,0 +1,10 @@
+name: IronMan
+version: '${version}'
+main: com.n3wham.ironman.Main
+api-version: '1.20'
+authors: [Haribo98, n3wham]
+commands:
+  im:
+    description: Iron Man command.
+  ironman:
+    description: Iron Man command.
